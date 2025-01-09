@@ -17,4 +17,12 @@ class TransactionModel extends Model
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
+
+    public function getTransactionsWithUser()
+    {
+        return $this->select('transactions.*, users.name AS buyer_name')
+            ->join('users', 'users.id = transactions.user_id')
+            ->orderBy('transactions.created_at', 'desc')
+            ->findAll();
+    }
 }

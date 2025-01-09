@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\TransactionModel;
 use App\Models\UserModel;
 
 class UserController extends BaseController
@@ -103,6 +104,17 @@ class UserController extends BaseController
 
     public function delete($id)
     {
+        $currentUserId = session()->get('user_id');
+        if ($id == $currentUserId) {
+            return redirect()->to('/users')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $transactionModel = new TransactionModel();
+        $relatedTransactions = $transactionModel->where('user_id', $id)->findAll();
+
+        if (!empty($relatedTransactions)) {
+            return redirect()->to('/users')->with('error', 'Data user tidak dapat dihapus karena masih terkait dengan transaksi.');
+        }
         $this->userModel->delete($id);
         return redirect()->to('/users')->with('success', 'Data user berhasil dihapus.');
     }

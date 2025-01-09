@@ -30,12 +30,19 @@ class LoginController extends BaseController
         $user = $userModel->getUserByUsername($username);
 
         if ($user && password_verify($password, $user['password'])) {
-            session()->set('user_id', $user['id']);
-            session()->set('username', $user['username']);
+            if ($user['role'] !== 'admin') {
+                session()->setFlashdata('error', 'Halaman user sekarang belum tersedia.');
+                return redirect()->to('/login');
+            }
+
+            session()->set([
+                'user_id' => $user['id'],
+                'username' => $user['username'],
+            ]);
             return redirect()->to('/');
-        } else {
-            session()->setFlashdata('error', 'Username atau Password salah.');
-            return redirect()->to('/login');
         }
+
+        session()->setFlashdata('error', 'Username atau Password salah.');
+        return redirect()->to('/login');
     }
 }

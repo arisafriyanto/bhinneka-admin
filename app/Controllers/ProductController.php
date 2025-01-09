@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\ProductModel;
+use App\Models\TransactionDetailModel;
 use App\Models\UnitModel;
 
 class ProductController extends BaseController
@@ -99,6 +100,13 @@ class ProductController extends BaseController
 
     public function delete($id)
     {
+        $transactionDetailModel = new TransactionDetailModel();
+        $relatedTransactions = $transactionDetailModel->where('product_id', $id)->findAll();
+
+        if (!empty($relatedTransactions)) {
+            return redirect()->to('/products')->with('error', 'Data produk tidak dapat dihapus karena masih terkait dengan transaksi.');
+        }
+
         $this->productModel->delete($id);
         return redirect()->to('/products')->with('success', 'Data produk berhasil dihapus.');
     }

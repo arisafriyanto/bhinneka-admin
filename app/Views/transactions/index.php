@@ -34,7 +34,7 @@
                                     <tr class="align-middle">
                                         <td><?= $index + 1 ?>.</td>
                                         <td><?= $transaction['invoice_number']; ?></td>
-                                        <td><?= $transaction['user_id']; ?></td>
+                                        <td><?= $transaction['buyer_name']; ?></td>
                                         <td><?= formatRupiah($transaction['total_price']); ?></td>
                                         <td class="text-center"><?= $transaction['total_quantity']; ?></td>
                                         <td class="text-center">

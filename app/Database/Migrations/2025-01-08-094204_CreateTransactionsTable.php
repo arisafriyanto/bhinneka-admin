@@ -41,7 +41,7 @@ class CreateTransactionsTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'RESTRICT');
 
         $this->forge->createTable('transactions');
     }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\ProductModel;
 use App\Models\UnitModel;
 
 class UnitController extends BaseController
@@ -66,6 +67,12 @@ class UnitController extends BaseController
 
     public function delete($id)
     {
+        $productModel = new ProductModel();
+        $relatedProducts = $productModel->where('unit_id', $id)->findAll();
+        if (!empty($relatedProducts)) {
+            return redirect()->to('/units')->with('error', 'Data satuan tidak dapat dihapus karena masih terkait dengan produk.');
+        }
+
         $this->unitModel->delete($id);
         return redirect()->to('/units')->with('success', 'Data satuan berhasil dihapus.');
     }

@@ -28,7 +28,7 @@ class TransactionController extends BaseController
 
     public function index()
     {
-        $data['transactions'] = $this->transactionModel->orderBy('created_at', 'desc')->findAll();
+        $data['transactions'] = $this->transactionModel->getTransactionsWithUser();
         return view('transactions/index', $data);
     }
 
@@ -116,7 +116,6 @@ class TransactionController extends BaseController
         }
     }
 
-
     public function show($id)
     {
         $data['transaction'] = $this->transactionModel
@@ -129,6 +128,10 @@ class TransactionController extends BaseController
             ->join('units', 'units.id = products.unit_id')
             ->where('transaction_details.transaction_id', $id)
             ->findAll();
+
+        $data['user'] = $this->userModel
+            ->where('id', $data['transaction']['user_id'])
+            ->first();
 
         $total_quantity = array_sum(array_column($data['transaction_details'], 'quantity'));
         $price = array_sum(array_column($data['transaction_details'], 'price'));
